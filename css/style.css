@@ -1,0 +1,679 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   منظومة العمل المدرسي — وزارة التعليم
+   Interactive institutional display · primary artboard 3:2 · adapted for 16:9
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 01 · TOKENS ─────────────────────────────────────────────────────────── */
+:root {
+  /* Institutional green system — deep, quiet, never neon */
+  --ink-900: #031714;
+  --ink-800: #052120;
+  --ink-700: #072B27;
+  --ink-600: #0A3A33;
+
+  --surface:      rgba(11, 58, 50, .60);
+  --surface-hi:   rgba(17, 82, 70, .76);
+  --surface-core: rgba(13, 66, 57, .72);
+
+  --edge:      rgba(140, 214, 195, .26);
+  --edge-mid:  rgba(140, 214, 195, .24);
+  --edge-hi:   rgba(140, 214, 195, .46);
+
+  --em:        #2FC7A2;   /* emerald accent */
+  --em-soft:   #86E3C9;
+  --em-deep:   #12876E;
+  --sand:      #D6BC87;   /* strictly secondary */
+
+  --text:      #EEF7F3;
+  --text-mid:  #B9D2CA;
+  --text-mute: #86A49B;
+
+  /* Rhythm */
+  --gap:        clamp(14px, 1.7vw, 38px);
+  --pad-x:      clamp(20px, 3.4vw, 84px);
+  --pad-y:      clamp(14px, 2.0vh, 38px);
+  --radius:     clamp(16px, 1.75vw, 34px);
+  --radius-sharp: 0px;
+
+  /* Type scale — tuned for multi-metre viewing distance */
+  --fs-node:    clamp(13px, 1.26vw, 29px);
+  --fs-index:   clamp(10px, .68vw, 16px);
+  --fs-core:    clamp(24px, 3.05vw, 70px);
+  --fs-coresub: clamp(10px, .76vw, 18px);
+  --fs-rail:    clamp(11px, .82vw, 19px);
+
+  --medallion:  clamp(38px, 3.3vw, 74px);
+
+  --ease:       cubic-bezier(.22, .78, .24, 1);
+  --dur:        .32s;
+
+  /* Core centre — refreshed from real geometry by JS */
+  --cx: 50%;
+  --cy: 52%;
+}
+
+/* ── 02 · RESET ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;               /* no scroll, ever */
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: "IBM Plex Sans Arabic", "Tajawal", "Segoe UI", Tahoma, sans-serif;
+  color: var(--text);
+  background: var(--ink-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ── 03 · AMBIENT FIELD ──────────────────────────────────────────────────── */
+/* Layered depth. If it disappears from across the room, that is correct.     */
+.field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 118%, rgba(6, 60, 51, .55) 0%, transparent 62%),
+    linear-gradient(168deg, var(--ink-800) 0%, var(--ink-900) 42%, #041A17 100%);
+}
+
+.field > * { position: absolute; display: block; }
+
+/* Ambient light behind the core */
+.field-glow {
+  top: var(--cy);
+  left: var(--cx);
+  width: 92vmin;
+  height: 92vmin;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+      rgba(47, 199, 162, .21) 0%,
+      rgba(24, 129, 106, .12) 36%,
+      transparent 70%);
+  filter: blur(6px);
+}
+
+/* Restrained concentric rings — the only pure geometry in the background */
+.field-ring {
+  top: var(--cy);
+  left: var(--cx);
+  translate: -50% -50%;
+  border-radius: 50%;
+  border: 1px solid rgba(134, 227, 201, .10);
+  opacity: 0;
+  animation: ringIn 1.5s var(--ease) forwards;
+}
+.field-ring--1 { width: 46vmin; height: 46vmin; animation-delay: .10s; }
+.field-ring--2 { width: 78vmin; height: 78vmin; border-color: rgba(134,227,201,.068); animation-delay: .22s; }
+.field-ring--3 { width: 114vmin; height: 114vmin; border-color: rgba(134,227,201,.045); animation-delay: .34s; }
+
+/* Architectural verticals */
+.field-columns {
+  inset: 0;
+  background-image: repeating-linear-gradient(90deg,
+      rgba(160, 226, 208, .030) 0 1px,
+      transparent 1px calc(100% / 12));
+  mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 72%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 72%, transparent 100%);
+  opacity: .8;
+}
+
+.field-vignette {
+  inset: 0;
+  background: radial-gradient(130% 105% at 50% 46%, transparent 46%, rgba(0, 0, 0, .42) 100%);
+}
+
+@keyframes ringIn {
+  from { opacity: 0; scale: .93; }
+  to   { opacity: 1; scale: 1; }
+}
+
+/* ── 04 · APP SHELL ──────────────────────────────────────────────────────── */
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: var(--pad-y) var(--pad-x) calc(var(--pad-y) * 1.5);
+  gap: clamp(14px, 2.4vh, 42px);
+}
+
+/* ── 05 · IDENTITY RAIL ──────────────────────────────────────────────────── */
+.rail {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.4vw, 30px);
+  opacity: 0;
+  animation: fadeDown .8s var(--ease) .05s forwards;
+}
+
+.lockup { display: flex; align-items: center; gap: clamp(9px, .8vw, 18px); }
+
+.lockup-mark {
+  display: grid;
+  place-items: center;
+  width: clamp(34px, 2.9vw, 66px);
+  height: clamp(34px, 2.9vw, 66px);
+  flex: none;
+}
+.lockup-img { width: 100%; height: 100%; object-fit: contain; }
+
+/* No stand-in emblem is ever drawn. When the official asset is absent the mark
+   slot simply collapses and the wordmark text carries the identity. */
+
+.lockup-text { display: grid; line-height: 1.28; }
+.lockup-text b {
+  font-size: var(--fs-rail);
+  font-weight: 600;
+  letter-spacing: -.015em;
+}
+.lockup-text i {
+  font-style: normal;
+  font-size: .74em;
+  font-weight: 400;
+  color: var(--text-mute);
+}
+
+.rail-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--edge) 18%, var(--edge) 82%, transparent);
+}
+
+.rail-tag {
+  flex: none;
+  font-size: calc(var(--fs-rail) * .8);
+  font-weight: 500;
+  letter-spacing: normal;
+  color: var(--text-mute);
+  padding: .35em 1em;
+  border: 1px solid var(--edge);
+  border-radius: 100px;
+}
+
+/* Logo presence switch */
+[data-logo="unknown"] .lockup-mark, [data-logo="unknown"] .core-mark { visibility: hidden; }
+[data-logo="ok"]      .core-word  { display: none; }
+[data-logo="missing"] .lockup-mark { display: none; }
+[data-logo="missing"] .core-img    { display: none; }
+
+/* ── 06 · STAGE ──────────────────────────────────────────────────────────── */
+/* Grid-anchored constellation. Placement is structural, so collisions are
+   impossible by construction — not by hand-tuned percentages.               */
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 5.9fr) minmax(0, 2fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "top   top   top"
+    "s     core  e"
+    "bot   bot   bot";
+  gap: var(--gap);
+  min-height: 0;
+}
+
+.arc--top    { grid-area: top; }
+.arc--bottom { grid-area: bot; }
+.flank--s    { grid-area: s; }
+.flank--e    { grid-area: e; }
+.core        { grid-area: core; }
+
+.arc {
+  display: grid;
+  gap: var(--gap);
+  align-items: stretch;
+  padding-top: calc(var(--medallion) * .55);
+}
+.arc--top    { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+/* Deliberate off-axis inset: the composition is balanced, not mirrored. */
+.arc--bottom {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding-inline-start: 14.5%;
+  padding-inline-end: 8.5%;
+}
+
+.flank {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: var(--gap);
+  align-content: space-between;
+  padding-block: clamp(18px, 7vh, 120px) clamp(10px, 3.5vh, 64px);
+}
+
+/* Arc drift — nodes curve toward the core instead of sitting on a rule */
+.arc--top    .node:nth-child(1), .arc--top .node:nth-child(5) { --drift:  2.4vh; }
+.arc--top    .node:nth-child(2), .arc--top .node:nth-child(4) { --drift:  0.8vh; }
+.arc--top    .node:nth-child(3)                               { --drift:  0px; }
+.arc--bottom .node:nth-child(1), .arc--bottom .node:nth-child(4) { --drift: -1.7vh; }
+.arc--bottom .node:nth-child(2), .arc--bottom .node:nth-child(3) { --drift: -0.4vh; }
+.flank--s .node:nth-child(1), .flank--e .node:nth-child(1) { --drift: -0.7vh; }
+.flank--s .node:nth-child(2), .flank--e .node:nth-child(2) { --drift:  0.7vh; }
+
+/* ── 07 · TETHERS ────────────────────────────────────────────────────────── */
+/* Hairline connectors, geometry computed from the real DOM. They live under
+   the nodes, so they can never cross a title.                              */
+.tethers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+  mask-image: radial-gradient(farthest-side circle at var(--cx) var(--cy),
+      #000 0%, #000 46%, rgba(0, 0, 0, .6) 74%, transparent 100%);
+  -webkit-mask-image: radial-gradient(farthest-side circle at var(--cx) var(--cy),
+      #000 0%, #000 46%, rgba(0, 0, 0, .6) 74%, transparent 100%);
+}
+.tether {
+  fill: none;
+  stroke: rgba(134, 227, 201, .30);
+  stroke-width: 1;
+  stroke-linecap: round;
+  transition: stroke .3s var(--ease), stroke-width .3s var(--ease);
+}
+.tether.is-lit { stroke: rgba(134, 227, 201, .72); stroke-width: 1.6; }
+
+.tether--anim {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  animation: draw 1s var(--ease) forwards;
+  animation-delay: calc(.55s + var(--seq, 0) * .045s);
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* ── 08 · CENTRAL IDENTITY CORE ──────────────────────────────────────────── */
+.core {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  padding: var(--gap);
+  opacity: 0;
+  animation: coreIn .95s var(--ease) .12s forwards;
+}
+
+.core-halo {
+  position: absolute;
+  inset: -6% -4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(47, 199, 162, .12), transparent 66%);
+  pointer-events: none;
+}
+
+.core-body {
+  position: relative;
+  width: 100%;
+  max-width: min(100%, 1000px);
+  padding: clamp(20px, 2.5vw, 54px) clamp(24px, 3.2vw, 72px);
+  text-align: center;
+  border: 1px solid var(--edge-mid);
+  border-radius: calc(var(--radius) * 1.6) 0 calc(var(--radius) * 1.6) calc(var(--radius) * 1.6);
+  overflow: hidden;
+  background:
+    radial-gradient(120% 100% at 50% -10%, rgba(47, 199, 162, .17), transparent 58%),
+    linear-gradient(158deg, rgba(18, 84, 72, .82), rgba(5, 34, 30, .88));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .085),
+    inset 0 -40px 70px rgba(0, 0, 0, .22),
+    0 40px 90px rgba(0, 0, 0, .42);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.core-body::after {
+  content: "";
+  position: absolute;
+  inset: clamp(9px, .85vw, 20px);
+  border: 1px solid rgba(140, 214, 195, .16);
+  border-radius: calc(var(--radius) * 1.2) 0 calc(var(--radius) * 1.2) calc(var(--radius) * 1.2);
+  pointer-events: none;
+}
+
+.core-mark {
+  display: grid;
+  place-items: center;
+  height: clamp(38px, 4.1vw, 92px);
+  margin-bottom: clamp(8px, .9vw, 20px);
+}
+.core-img { max-height: 100%; width: auto; object-fit: contain; }
+.core-word {
+  font-size: clamp(15px, 1.25vw, 28px);
+  font-weight: 600;
+  letter-spacing: normal;
+  color: var(--em-soft);
+}
+
+.core-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 auto clamp(9px, 1vw, 22px);
+  width: min(72%, 340px);
+}
+.core-rule i {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(214, 188, 135, .55));
+}
+.core-rule i:last-child { background: linear-gradient(90deg, rgba(214, 188, 135, .55), transparent); }
+.core-rule b {
+  width: 6px;
+  height: 6px;
+  rotate: 45deg;
+  background: var(--sand);
+  opacity: .8;
+}
+
+.core-title {
+  font-size: var(--fs-core);
+  font-weight: 700;
+  line-height: 1.16;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.core-sub {
+  margin-top: clamp(6px, .7vw, 16px);
+  font-size: var(--fs-coresub);
+  font-weight: 400;
+  letter-spacing: normal;
+  color: var(--text-mid);
+}
+
+/* ── 09 · NODES ──────────────────────────────────────────────────────────── */
+.node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(6px, .55vw, 14px);
+  padding: calc(var(--medallion) * .62) clamp(12px, 1.05vw, 26px) clamp(11px, .95vw, 24px);
+  min-height: clamp(88px, 9.6vh, 164px);
+
+  color: var(--text);
+  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+
+  /* Asymmetric institutional panel — sharp leading corner, soft elsewhere */
+  border: 1px solid var(--edge);
+  border-radius: var(--radius) var(--radius-sharp) var(--radius) var(--radius);
+  background:
+    linear-gradient(158deg, rgba(24, 100, 86, .70), rgba(7, 44, 38, .66));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .05),
+    0 18px 44px rgba(0, 0, 0, .22);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+
+  translate: 0 var(--drift, 0px);
+  transition:
+    translate var(--dur) var(--ease),
+    scale var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+
+  opacity: 0;
+}
+.node.is-in {
+  animation: nodeIn .72s var(--ease) forwards;
+  animation-delay: calc(.28s + var(--seq, 0) * .052s);
+}
+
+/* Top light catch */
+.node::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .055), transparent 42%);
+  pointer-events: none;
+}
+
+/* Medallion — breaks the rectangle silhouette so this never reads as a card */
+.node-mark {
+  position: absolute;
+  top: calc(var(--medallion) * -.5);
+  left: 50%;
+  translate: -50% 0;
+  width: var(--medallion);
+  height: var(--medallion);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--em-soft);
+  background: linear-gradient(160deg, #12594B, #072B26);
+  border: 1px solid var(--edge-mid);
+  box-shadow:
+    0 0 0 clamp(4px, .38vw, 9px) var(--ink-900),
+    0 10px 26px rgba(0, 0, 0, .4);
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              background var(--dur) var(--ease), scale var(--dur) var(--ease);
+}
+.node-mark svg {
+  width: 54%;
+  height: 54%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.node-title {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  font-size: var(--fs-node);
+  font-weight: 600;
+  line-height: 1.42;
+  letter-spacing: -.022em;
+  text-wrap: balance;
+  /* No clipping, no ellipsis — long titles are allowed to breathe */
+  overflow-wrap: break-word;
+}
+
+.node-foot {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, .5vw, 12px);
+}
+.node-foot i {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--edge-mid));
+  transition: background var(--dur) var(--ease);
+}
+.node-foot b {
+  font-size: var(--fs-index);
+  font-weight: 600;
+  letter-spacing: .09em;
+  color: var(--text-mute);
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur) var(--ease);
+}
+
+/* ── 10 · NODE STATES ────────────────────────────────────────────────────── */
+.node.is-hot {
+  translate: 0 calc(var(--drift, 0px) - clamp(5px, .5vw, 11px));
+  border-color: var(--edge-hi);
+  background: linear-gradient(158deg, rgba(35, 140, 119, .86), rgba(10, 62, 53, .78));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .1),
+    0 30px 62px rgba(0, 0, 0, .34),
+    0 0 44px rgba(47, 199, 162, .1);
+}
+.node.is-hot .node-mark {
+  scale: 1.07;
+  color: #FFF;
+  border-color: var(--em);
+  background: linear-gradient(160deg, #1E9C80, #0C5546);
+}
+.node.is-hot .node-foot i { background: linear-gradient(90deg, transparent, var(--em)); }
+.node.is-hot .node-foot b { color: var(--sand); }
+
+.node.is-press { translate: 0 calc(var(--drift, 0px) - 2px); scale: .985; transition-duration: .09s; }
+
+.node:focus-visible {
+  outline: 3px solid var(--em-soft);
+  outline-offset: clamp(4px, .4vw, 9px);
+}
+
+/* ── 11 · MOTION ─────────────────────────────────────────────────────────── */
+@keyframes nodeIn {
+  from { opacity: 0; translate: 0 calc(var(--drift, 0px) + 22px); scale: .965; }
+  to   { opacity: 1; translate: 0 var(--drift, 0px); scale: 1; }
+}
+@keyframes coreIn {
+  from { opacity: 0; scale: .955; }
+  to   { opacity: 1; scale: 1; }
+}
+@keyframes fadeDown {
+  from { opacity: 0; translate: 0 -10px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+/* ── 12 · RATIO ADAPTATION ───────────────────────────────────────────────── */
+
+/* 16:9 and wider — more width, less height. The composition spreads outward
+   and flattens rather than shrinking uniformly.                             */
+@media (min-aspect-ratio: 1.62) {
+  :root {
+    --gap:      clamp(14px, 1.45vw, 34px);
+    --pad-y:    clamp(12px, 1.5vh, 26px);
+    --fs-node:  clamp(13px, 1.18vw, 27px);
+    --fs-core:  clamp(24px, 2.85vw, 64px);
+    --medallion: clamp(36px, 3vw, 66px);
+  }
+  .stage { grid-template-columns: minmax(0, 2.05fr) minmax(0, 5.5fr) minmax(0, 2.05fr); }
+  .arc--top    { padding-inline: 1.5%; }
+  .arc--bottom { padding-inline-start: 15.5%; padding-inline-end: 9%; }
+  .core-body   { max-width: min(100%, 1000px); padding-block: clamp(20px, 2.5vw, 56px); }
+  .node        { padding-bottom: clamp(8px, .7vw, 17px); }
+  .arc--top .node:nth-child(1), .arc--top .node:nth-child(5) { --drift: 1.9vh; }
+  .arc--bottom .node:nth-child(1), .arc--bottom .node:nth-child(4) { --drift: -1.3vh; }
+}
+
+/* Taller than 3:2 — pull the flanks in, let the arcs breathe vertically */
+@media (max-aspect-ratio: 1.34) {
+  .stage { grid-template-columns: minmax(0, 2.15fr) minmax(0, 5.2fr) minmax(0, 2.15fr); }
+  .core-body { max-width: min(100%, 860px); }
+}
+
+/* Small landscape — the ring still holds, density tightens */
+@media (max-width: 1100px) and (min-aspect-ratio: 1.1) {
+  :root {
+    --gap: 9px;
+    --pad-x: 16px;
+    --fs-node: 12px;
+    --fs-index: 9px;
+    --medallion: 34px;
+    --radius: 13px;
+  }
+  .rail-tag { display: none; }
+  .node { padding-inline: 8px; }
+  .node-title { line-height: 1.34; }
+}
+
+@media (max-width: 900px), (max-aspect-ratio: 1.1) {
+  :root {
+    --gap:        clamp(10px, 2.4vw, 22px);
+    --pad-x:      clamp(14px, 4vw, 34px);
+    --pad-y:      clamp(14px, 2.6vw, 26px);
+    --fs-node:    clamp(13px, 3.4vw, 21px);
+    --fs-index:   clamp(10px, 2.4vw, 14px);
+    --fs-core:    clamp(26px, 7vw, 46px);
+    --fs-coresub: clamp(11px, 2.9vw, 16px);
+    --fs-rail:    clamp(12px, 3.2vw, 18px);
+    --medallion:  clamp(40px, 10vw, 58px);
+    --radius:     clamp(14px, 3.4vw, 22px);
+  }
+
+  html, body { overflow-x: hidden; overflow-y: auto; height: auto; }
+  .app { height: auto; min-height: 100dvh; }
+
+  /* The connectors describe a ring that no longer exists here */
+  .tethers, .field-ring { display: none; }
+
+  .stage {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: none;
+    align-content: start;
+    gap: var(--gap);
+    padding-top: calc(var(--medallion) * .62);
+  }
+
+  /* Flatten the four composition groups into one continuous 2-up list */
+  .arc, .flank { display: contents; }
+  .arc--top, .arc--bottom, .flank--s, .flank--e, .core { grid-area: auto; }
+
+  .core {
+    grid-column: 1 / -1;
+    padding: 0 0 clamp(16px, 4vw, 30px);
+  }
+  .core-body {
+    max-width: none;
+    padding: clamp(20px, 5vw, 34px) clamp(16px, 4vw, 28px);
+  }
+  .core-mark { height: clamp(34px, 9vw, 50px); }
+  .core-rule { width: min(80%, 260px); }
+
+  .node {
+    --drift: 0px !important;
+    min-height: clamp(112px, 27vw, 168px);
+  }
+  .node.is-hot { translate: 0 -4px; }
+
+  .rail-tag { display: none; }
+}
+
+/* Single column where two would crush the Arabic. vw-based type collapses on
+   a phone, so the node scale is reset against the full-width panel. */
+@media (max-width: 430px) {
+  :root {
+    --fs-node:  clamp(15px, 4.5vw, 20px);
+    --fs-index: 11px;
+    --medallion: clamp(42px, 11vw, 52px);
+  }
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .node {
+    min-height: 0;
+    padding-inline: clamp(16px, 5vw, 26px);
+  }
+  .lockup-text i { display: none; }
+}
+
+/* ── 13 · REDUCED MOTION ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: .001ms !important;
+  }
+  .node, .core, .rail, .field-ring { opacity: 1 !important; }
+  .tether--anim { stroke-dashoffset: 0 !important; }
+}

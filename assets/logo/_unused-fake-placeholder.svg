@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <rect width="120" height="120" rx="20" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <circle cx="60" cy="50" r="18" stroke="rgba(168,188,182,0.3)" stroke-width="1.2" fill="none"/>
+  <path d="M42 50 L60 38 L78 50 L60 62 Z" stroke="rgba(168,188,182,0.25)" stroke-width="1" fill="none"/>
+  <text x="60" y="82" text-anchor="middle" fill="rgba(168,188,182,0.35)" font-size="9" font-family="Tajawal, Arial, sans-serif" font-weight="500">وزارة التعليم</text>
+  <text x="60" y="96" text-anchor="middle" fill="rgba(168,188,182,0.2)" font-size="7" font-family="Tajawal, Arial, sans-serif">الشعار الرسمي</text>
+</svg>
