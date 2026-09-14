@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-logo="unknown">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#04211D">
 <title>منظومة العمل المدرسي — وزارة التعليم</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/ibm-plex-sans-arabic-arabic-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/ibm-plex-sans-arabic-arabic-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<!-- ══════════════ AMBIENT FIELD (decorative, never competes with content) ══════════════ -->
+<!-- ══════════════ AMBIENT FIELD (decorative, shared by both views) ══════════════ -->
 <div class="field" aria-hidden="true">
   <span class="field-glow"></span>
   <span class="field-ring field-ring--1"></span>
@@ -24,50 +23,88 @@
   <span class="field-vignette"></span>
 </div>
 
-<div class="app">
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 1 · HOME — exhibition entrance
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section class="view home" id="viewHome" data-view="home" aria-labelledby="homeTitle">
 
-  <!-- ══════════════ IDENTITY RAIL ══════════════ -->
-  <header class="rail">
-    <div class="lockup">
-      <span class="lockup-mark">
-        <img class="lockup-img" alt="وزارة التعليم">
-      </span>
-      <span class="lockup-text">
-        <b>وزارة التعليم</b>
-        <i>المملكة العربية السعودية</i>
-      </span>
-    </div>
-    <span class="rail-rule"></span>
-    <span class="rail-tag">شاشة تفاعلية</span>
+  <!-- Official identity lockup — wording taken verbatim from the supplied header reference -->
+  <header class="ident">
+    <span class="ident-plate">
+      <img class="logo" src="assets/logo/moe-logo.jpg" width="181" height="147" alt="شعار وزارة التعليم">
+    </span>
+    <span class="ident-rule" aria-hidden="true"></span>
+    <span class="ident-text">
+      <span class="ident-l1">المملكة العربية السعودية</span>
+      <span class="ident-l2">وزارة التعليم</span>
+      <span class="ident-l3">الإدارة العامة للتعليم بمنطقة عسير</span>
+      <span class="ident-l4">مجمع حسان بن ثابت وثانوية علي بن أبي طالب</span>
+    </span>
   </header>
 
-  <!-- ══════════════ STAGE ══════════════ -->
-  <main class="stage" id="stage">
+  <div class="hero">
+    <p class="hero-kicker"><i aria-hidden="true"></i>البوابة التفاعلية للمعلومات المدرسية</p>
+    <h1 class="hero-title" id="homeTitle">منظومة العمل المدرسي</h1>
+    <p class="hero-sub">أقسام العمل المدرسي وملفاتها في منظومة واحدة — اختر القسم للاطلاع عليه.</p>
 
+    <button class="cta" id="enter" type="button">
+      <span class="cta-label">استكشف منظومة العمل المدرسي</span>
+      <span class="cta-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false"><path d="M19 12H5.5"/><path d="m11 5.5-6.5 6.5 6.5 6.5"/></svg>
+      </span>
+    </button>
+  </div>
+
+  <!-- Focal visual — built from the same SECTIONS data as the system itself -->
+  <div class="visual" id="visual">
+    <div class="orbit" id="orbit" aria-hidden="true">
+      <svg class="orbit-lines" id="orbitLines" viewBox="0 0 1000 1000" focusable="false"></svg>
+      <span class="orbit-core">
+        <i class="orbit-core-gem"></i>
+        <b class="orbit-core-num" id="orbitCount"></b>
+        <span class="orbit-core-cap">قسمًا</span>
+      </span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 2 · SECTIONS — the school work ecosystem
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<section class="view sections" id="viewSections" data-view="sections" aria-labelledby="coreTitle">
+
+  <header class="rail">
+    <button class="home-btn" id="goHome" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.8 10.6 12 3.8l8.2 6.8"/><path d="M5.8 9v11.2h12.4V9"/><path d="M10 20.2v-5.4h4v5.4"/></svg>
+      <span>الرئيسية</span>
+    </button>
+    <span class="rail-rule" aria-hidden="true"></span>
+    <span class="rail-tag">اختر القسم للاطلاع على ملفاته</span>
+  </header>
+
+  <main class="stage" id="stage">
     <svg class="tethers" id="tethers" aria-hidden="true" focusable="false"></svg>
 
-    <!-- CENTRAL IDENTITY CORE -->
     <section class="core" id="core" aria-labelledby="coreTitle">
-      <span class="core-halo" aria-hidden="true"></span>
       <div class="core-body">
-        <span class="core-mark">
-          <img class="core-img" alt="وزارة التعليم">
-          <span class="core-word" aria-hidden="true">وزارة التعليم</span>
+        <span class="core-plate">
+          <img class="logo" src="assets/logo/moe-logo.jpg" width="181" height="147" alt="شعار وزارة التعليم">
         </span>
-        <span class="core-rule" aria-hidden="true"><i></i><b></b><i></i></span>
-        <h1 class="core-title" id="coreTitle">منظومة العمل المدرسي</h1>
-        <p class="core-sub">المملكة العربية السعودية</p>
+        <span class="core-text">
+          <span class="core-rule" aria-hidden="true"><i></i><b></b><i></i></span>
+          <h2 class="core-title" id="coreTitle">منظومة العمل المدرسي</h2>
+          <p class="core-sub">مجمع حسان بن ثابت وثانوية علي بن أبي طالب</p>
+        </span>
       </div>
     </section>
 
-    <nav class="arc arc--top"    id="arcTop"    aria-label="منظومة العمل المدرسي — الجزء العلوي"></nav>
-    <nav class="flank flank--s"  id="flankS"    aria-label="منظومة العمل المدرسي — الجانب الأيمن"></nav>
-    <nav class="flank flank--e"  id="flankE"    aria-label="منظومة العمل المدرسي — الجانب الأيسر"></nav>
-    <nav class="arc arc--bottom" id="arcBottom" aria-label="منظومة العمل المدرسي — الجزء السفلي"></nav>
-
+    <nav class="wing wing--a" id="wingA" aria-label="أقسام المنظومة — المجموعة الأولى"></nav>
+    <nav class="wing wing--b" id="wingB" aria-label="أقسام المنظومة — المجموعة الثانية"></nav>
   </main>
 
-</div>
+  <p class="toast" id="toast" role="status" aria-live="polite"></p>
+</section>
 
 <script src="js/app.js"></script>
 </body>
