@@ -54,10 +54,11 @@ school-interactive-display/
 
 ---
 
-## إضافة روابط Google Drive
+## روابط Google Drive
 
-كل المحتوى في مكان واحد: مصفوفة `SECTIONS` في أعلى `js/app.js`.
-ضع الرابط في حقل `url` — لا شيء آخر يحتاج تعديلًا:
+روابط الأقسام العشرين مضافة في مصفوفة `SECTIONS` أعلى `js/app.js`.
+يؤدي الضغط على عنوان أي قسم إلى فتح مجلد Google Drive المرتبط به في تبويب جديد.
+لإضافة قسم أو تحديث رابطه، ضع الرابط في حقل `url` — لا شيء آخر يحتاج تعديلًا:
 
 ```javascript
 { id: 'external-evaluation', title: 'التقويم المدرسي الخارجي', icon: 'calendar', url: 'https://drive.google.com/...' },
@@ -71,7 +72,7 @@ school-interactive-display/
 | `url`   | رابط Google Drive، أو `null` إن لم يتوفر بعد |
 
 - `url` = `null` ⇒ يُبنى القسم كزر؛ اللمس يُظهر تنبيهًا هادئًا «لم يُضف رابط هذا القسم بعد» ولا ينتقل لأي مكان.
-- `url` يبدأ بـ `https://` ⇒ يُبنى كرابط `<a target="_blank" rel="noopener noreferrer">`.
+- `url` يبدأ بـ `https://` ⇒ يُبنى كرابط `<a target="_blank" rel="noopener noreferrer">` ويفتح في تبويب جديد.
 - الترتيب في المصفوفة هو ترتيب العرض: الأقسام 1–10 في الجناح الأول، و11–20 في الثاني.
 
 ---

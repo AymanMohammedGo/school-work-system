@@ -11,26 +11,26 @@
    الترتيب هنا هو ترتيب العرض: الأقسام 1–10 في الجناح الأول، و11–20 في الثاني.
    ─────────────────────────────────────────────────────────────────────────── */
 const SECTIONS = [
-  { id: 'external-evaluation', title: 'التقويم المدرسي الخارجي',                   icon: 'calendar',    url: null },
-  { id: 'operational-plan',    title: 'الخطة التشغيلية',                            icon: 'plan',        url: null },
-  { id: 'improvement-plan',    title: 'الخطة التحسينية لمجالات النموذج الإشرافي',   icon: 'improve',     url: null },
-  { id: 'compliance',          title: 'معايير الالتزام والامتثال',                  icon: 'compliance',  url: null },
-  { id: 'madrasati',           title: 'منصة مدرستي',                                icon: 'platform',    url: null },
-  { id: 'school-admin',        title: 'الإدارة المدرسية',                           icon: 'school',      url: null },
-  { id: 'student-activity',    title: 'النشاط الطلابي',                             icon: 'activity',    url: null },
-  { id: 'student-guidance',    title: 'التوجيه الطلابي',                            icon: 'guidance',    url: null },
-  { id: 'teachers',            title: 'المعلمون',                                   icon: 'teacher',     url: null },
-  { id: 'nafes',               title: 'خطط واختبارات نافس',                        icon: 'assessment',  url: null },
-  { id: 'qudurat-tahsili',     title: 'خطط واختبارات القدرات والتحصيلي',           icon: 'aptitude',    url: null },
-  { id: 'professional-dev',    title: 'التطوير المهني',                             icon: 'growth',      url: null },
-  { id: 'students',            title: 'الطلاب',                                     icon: 'students',    url: null },
-  { id: 'unified-support',     title: 'الدعم الموحد',                               icon: 'support',     url: null },
-  { id: 'performance-tasks',   title: 'المهام الأدائية المتنوعة',                   icon: 'tasks',       url: null },
-  { id: 'gifted',              title: 'الموهوبين',                                  icon: 'gifted',      url: null },
-  { id: 'job-performance',     title: 'الأداء الوظيفي',                             icon: 'performance', url: null },
-  { id: 'learning-loss',       title: 'الفاقد التعليمي',                            icon: 'recovery',    url: null },
-  { id: 'publications',        title: 'منشورات',                                    icon: 'publication', url: null },
-  { id: 'health-guide',        title: 'الموجه الصحي',                               icon: 'health',      url: null }
+  { id: 'external-evaluation', title: 'التقويم المدرسي الخارجي',                   icon: 'calendar',    url: 'https://drive.google.com/drive/folders/1IbLghjGM6zK2waucwPYeu3sSlPz6vB1E?usp=drive_link' },
+  { id: 'operational-plan',    title: 'الخطة التشغيلية',                            icon: 'plan',        url: 'https://drive.google.com/drive/folders/1tHcDDjC-WVdc_GI-7ecnt8uYvyfbLycx?usp=drive_link' },
+  { id: 'improvement-plan',    title: 'الخطة التحسينية لمجالات النموذج الإشرافي',   icon: 'improve',     url: 'https://drive.google.com/drive/folders/1-lXb8x8fVW3gUp3aRjmeXT8GJL9DYwgX?usp=drive_link' },
+  { id: 'compliance',          title: 'معايير الالتزام والامتثال',                  icon: 'compliance',  url: 'https://drive.google.com/drive/folders/191lflFD3m-iKuazD8i_364OiWqy1c79O?usp=drive_link' },
+  { id: 'madrasati',           title: 'منصة مدرستي',                                icon: 'platform',    url: 'https://drive.google.com/drive/folders/1TvopPAsEVdv75OMrrZWd4zm-79I7rJQz?usp=drive_link' },
+  { id: 'school-admin',        title: 'الإدارة المدرسية',                           icon: 'school',      url: 'https://drive.google.com/drive/folders/1zDLxr2O-Aj_rG3w6a3e27AsgMcXnTDJK?usp=drive_link' },
+  { id: 'student-activity',    title: 'النشاط الطلابي',                             icon: 'activity',    url: 'https://drive.google.com/drive/folders/1y-Snjm2Z1cOWbZ312yoN85J3kFu59NOn?usp=drive_link' },
+  { id: 'student-guidance',    title: 'التوجيه الطلابي',                            icon: 'guidance',    url: 'https://drive.google.com/drive/folders/1m6cIWPEUjLdzhERB4GhcvDGR83vdvrc6?usp=drive_link' },
+  { id: 'teachers',            title: 'المعلمون',                                   icon: 'teacher',     url: 'https://drive.google.com/drive/folders/1W6EOiO5QCbFHdmhFtoUTomVmIeX-Pq3n?usp=drive_link' },
+  { id: 'nafes',               title: 'خطط واختبارات نافس',                        icon: 'assessment',  url: 'https://drive.google.com/drive/folders/15QIc8p2yKLuc2FNYqbopdOQxmBYOVwWx?usp=drive_link' },
+  { id: 'qudurat-tahsili',     title: 'خطط واختبارات القدرات والتحصيلي',           icon: 'aptitude',    url: 'https://drive.google.com/drive/folders/1X7igt06_6kBZ2H2ag3zAvadeodITbv8u?usp=drive_link' },
+  { id: 'professional-dev',    title: 'التطوير المهني',                             icon: 'growth',      url: 'https://drive.google.com/drive/folders/1aJN-4IMU4GyHCtn4B2-L9pEmEmj4uZov?usp=drive_link' },
+  { id: 'students',            title: 'الطلاب',                                     icon: 'students',    url: 'https://drive.google.com/drive/folders/1nHJMkwfhhGUlOP97Ma5hRf10dDKgSJ64?usp=drive_link' },
+  { id: 'unified-support',     title: 'الدعم الموحد',                               icon: 'support',     url: 'https://drive.google.com/drive/folders/16yueDf2FpYxPZTKYgIH0Zp7LxlHqraB_?usp=drive_link' },
+  { id: 'performance-tasks',   title: 'المهام الأدائية المتنوعة',                   icon: 'tasks',       url: 'https://drive.google.com/drive/folders/1FgPowSr6dYXNkj7VDKrJVx_6Qeifn-jr?usp=drive_link' },
+  { id: 'gifted',              title: 'الموهوبين',                                  icon: 'gifted',      url: 'https://drive.google.com/drive/folders/1KnCrZ1J7tfAhjpAhrZa6PEwDQIsbMH9v?usp=drive_link' },
+  { id: 'job-performance',     title: 'الأداء الوظيفي',                             icon: 'performance', url: 'https://drive.google.com/drive/folders/1Oqp9KHNxhGQ0yA6W_wRSM7lM1E70rqxb?usp=drive_link' },
+  { id: 'learning-loss',       title: 'الفاقد التعليمي',                            icon: 'recovery',    url: 'https://drive.google.com/drive/folders/1fe09gf2gkNA-Ij8_geUqfvCBmyaF8iKv?usp=drive_link' },
+  { id: 'publications',        title: 'منشورات',                                    icon: 'publication', url: 'https://drive.google.com/drive/folders/1pZGVug-p86IjDJ4M3FpFSa2JFpNJSF3q?usp=drive_link' },
+  { id: 'health-guide',        title: 'الموجه الصحي',                               icon: 'health',      url: 'https://drive.google.com/drive/folders/16XlviS43WuaRU-OjbjQedzKZnqyFrAjt?usp=drive_link' }
 ];
 
 /* ───────────────────────────────────────────────────────────────────────────
